@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class Store : MonoBehaviour {
 
     float CurrentBalance;
-    float BaseStoreCost;
+    public float BaseStoreCost { get; set; }
     int StoreCount;
     public Text StoreCountText;
     public Slider ProgressSlider;
@@ -14,16 +14,21 @@ public class Store : MonoBehaviour {
     float StoreTimer;
     float CurrentTimer;
     bool StartTimer;
-    float BaseStoreProfit;
+    public float BaseStoreProfit { get; set; }
     // Start is called before the first frame update
+    public Store(float baseCost, float baseProfit)
+    {
+        BaseStoreCost = baseCost;
+        BaseStoreProfit = baseProfit;
+    }
     void Start()
     {
-        StoreTimer = 6.0f;
+        StoreTimer = 5.0f;
         CurrentTimer = 0;
         StoreCount = 1; 
-        BaseStoreCost = 1.50f;
+        //BaseStoreCost = 1.50f;
         StartTimer = false;
-        BaseStoreProfit = .50f;
+        //BaseStoreProfit = .50f;
     }
 
 
