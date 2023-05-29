@@ -29,6 +29,9 @@ public class Store : MonoBehaviour {
         //BaseStoreCost = 1.50f;
         StartTimer = false;
         //BaseStoreProfit = .50f;
+        ProgressSlider.minValue = 0;
+        ProgressSlider.maxValue = StoreTimer;
+        ProgressSlider.value = CurrentTimer;
     }
 
 
@@ -47,7 +50,7 @@ public class Store : MonoBehaviour {
             }
             
         }
-        ProgressSlider.value = CurrentTimer / StoreTimer;
+        ProgressSlider.value = CurrentTimer;
 
     }
     public void BuyStoreOnClick()
