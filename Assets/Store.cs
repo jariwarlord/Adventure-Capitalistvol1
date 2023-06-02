@@ -1,77 +1,85 @@
-using System.Collections; 
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
-public class Store : MonoBehaviour {
-
-    float CurrentBalance;
+public class Store : MonoBehaviour
+{
+    private System.Random random = new System.Random();
     public float BaseStoreCost { get; set; }
-    int StoreCount;
+    public int StoreCount { get; private set; }
     public Text StoreCountText;
     public Slider ProgressSlider;
-    public gamemanager GameManager;
-    float StoreTimer;
-    float CurrentTimer;
-    bool StartTimer;
+    public GameManager GameManager { get; set; }
+    private float StoreTimer;
+    private float CurrentTimer;
+    private bool StartTimer;
     public float BaseStoreProfit { get; set; }
-    // Start is called before the first frame update
-    public Store(float baseCost, float baseProfit)
+
+    private float CalculateFormula(float x)
     {
-        BaseStoreCost = baseCost;
-        BaseStoreProfit = baseProfit;
+        float result = (1 + Mathf.Sqrt(5)) / 2 * (Mathf.Sqrt(x)) + Mathf.Sin(x);
+        return result;
     }
-    void Start()
+
+    private void Start()
     {
-        StoreTimer = 5.0f;
-        CurrentTimer = 0;
-        StoreCount = 1; 
-        //BaseStoreCost = 1.50f;
+        StoreTimer = 12.0f;
+        CurrentTimer = 0f;
+        StoreCount = 1;
         StartTimer = false;
-        //BaseStoreProfit = .50f;
+
         ProgressSlider.minValue = 0;
         ProgressSlider.maxValue = StoreTimer;
-        ProgressSlider.value = CurrentTimer;
+        ProgressSlider.value = 0f;
     }
 
-
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (StartTimer)
         {
             CurrentTimer += Time.deltaTime;
-            if(CurrentTimer > StoreTimer)
+            if (CurrentTimer >= StoreTimer)
             {
-                Debug.Log("Timer has ended. Reset.");
+                Debug.Log("Süre Doldu, Kar Ekleniyor.");
+                float profit = CalculateFormula(BaseStoreCost);
+                GameManager.AddToBalance(profit * StoreCount);
+
                 StartTimer = false;
                 CurrentTimer = 0f;
-                GameManager.AddToBalance(BaseStoreProfit * StoreCount);
             }
-            
         }
-        ProgressSlider.value = CurrentTimer;
 
+        ProgressSlider.value = CurrentTimer;
     }
+
     public void BuyStoreOnClick()
     {
         if (!GameManager.CanBuy(BaseStoreCost))
+        {
+            Debug.Log("Yetersiz Bakiye!");
             return;
-        StoreCount = StoreCount + 1;
-        Debug.Log(StoreCount);
-        StoreCountText.text = StoreCount.ToString();
+        }
+
         GameManager.AddToBalance(-BaseStoreCost);
-        
-        
-    }
-    public void StoreOnClick()  
-    {
-        Debug.Log("Timer Has Started");
-        if (!StartTimer)
-           StartTimer = true;
-            
-        
-        
+
+        float fluctuation = random.Next(-10, 10) / 100f;
+        float totalCost = BaseStoreCost + fluctuation;
+        float profit = CalculateFormula(totalCost);
+
+      
+
+        StoreCount++;
+        StoreCountText.text = StoreCount.ToString();
     }
 
+    public void StoreOnClick()
+    {
+        Debug.Log("Süre baþladý!");
+        if (!StartTimer)
+        {
+            StartTimer = true;
+        }
+    }
 }
